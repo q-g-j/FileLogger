@@ -20,7 +20,6 @@ namespace Logging
         /// <param name="args"></param>
         public void LogWriteLine(object o, LoggerEventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine("run");
             Task.Run(() =>
             {
                 try
@@ -127,9 +126,10 @@ namespace Logging
 
         private static void WaitForFile(string filename)
         {
-            while (!IsFileReady(filename))
+            int counter = 0;
+            while (!IsFileReady(filename) && counter < 100)
             {
-                ;
+                counter++;
             }
         }
     }
