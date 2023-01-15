@@ -12,11 +12,13 @@ namespace Logging
     /// </summary>
     public class FileLogger
     {
-        public FileLogger(int _maxFileSizeInKB)
+        public FileLogger(string _logFileName, int _maxFileSizeInKB)
         {
+            logFileName = _logFileName;
             maxFileSizeInKB = _maxFileSizeInKB;
         }
 
+        private readonly string logFileName;
         private readonly int maxFileSizeInKB;
 
         public void LogWriteLine(object o, LoggerEventArgs args)
@@ -39,23 +41,23 @@ namespace Logging
                         message += $" - {args.Message}";
                     }
 
-                    WaitForFile(args.FileName);
-                    using (var streamWriter = new StreamWriter(args.FileName, true))
+                    WaitForFile(logFileName);
+                    using (var streamWriter = new StreamWriter(logFileName, true))
                     {
                         streamWriter.WriteLine(message);
                     }
 
-                    List<string> logFileContent = File.ReadAllLines(args.FileName).ToList();
+                    List<string> logFileContent = File.ReadAllLines(logFileName).ToList();
 
                     if (GetSizeOfStringListInBytes(logFileContent) > maxFileSizeInKB)
                     {
-                        WaitForFile(args.FileName);
-                        File.WriteAllLines(args.FileName, TrimToSizeInByte(logFileContent, 1024 * maxFileSizeInKB));
+                        WaitForFile(logFileName);
+                        File.WriteAllLines(logFileName, TrimToSizeInByte(logFileContent, 1024 * maxFileSizeInKB));
                     }
                     else
                     {
-                        WaitForFile(args.FileName);
-                        File.WriteAllLines(args.FileName, logFileContent);
+                        WaitForFile(logFileName);
+                        File.WriteAllLines(logFileName, logFileContent);
                     }
                 }
                 catch
