@@ -4,7 +4,7 @@
  Used in my other project [ToggleHypervisor](https://github.com/q-g-j/ToggleHypervisor)
  
  ### Features
- - provides a simple ILogger interface
+ - provides a simple IFileLogger interface
  - trims the log file to a specified size
  - takes simultaneous file access into account
  
