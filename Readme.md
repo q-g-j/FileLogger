@@ -15,6 +15,10 @@
  - add the project to your VS solution
  - add a reference to this project in the reference manager
  - a class can now inherit from IFileLogger.  Here is a sample implementation:
+ 
+<details>
+<summary><b>Interface implementation (click to expand)</b></summary>
+
 ```
 public class MyClass : IFileLogger
 {
@@ -50,8 +54,11 @@ public class MyClass : IFileLogger
     }
 }
 ```
+</details>
 
-Now you can run ```RaiseLogEvent(object o, LoggerEventArgs eventArgs)``` in the implementing class like this:
+<details>
+<summary><b>Raising a LogEvent (click to expand)</b></summary>
+
 ```
 try
 {
@@ -68,3 +75,4 @@ catch (Exception ex)
     RaiseLogEvent(this, loggerEventArgs);
 }
 ```
+</details>
