@@ -47,6 +47,7 @@ namespace Logging
                         streamWriter.WriteLine(message);
                     }
 
+                    WaitForFile(logFileName);
                     List<string> logFileContent = File.ReadAllLines(logFileName).ToList();
 
                     if (GetSizeOfStringListInBytes(logFileContent) > maxFileSizeInKB)
