@@ -26,7 +26,8 @@ public class MyClass : IFileLogger
     
     public MyClass()
     {
-        fileLogger = new FileLogger(4);   // pass the desired max. log file size in KB to the constructor
+        // pass the log filename and the desired max. log file size in KB to the constructor:
+        fileLogger = new FileLogger("MyProgram.log", 4);   
         LogEvent += fileLogger.LogWriteLine;
     }
     
@@ -49,7 +50,7 @@ public class MyClass : IFileLogger
 
     protected virtual LoggerEventArgs GetLoggerEventArgs(string message, string className, string methodName, Exception e)
     {
-        return new LoggerEventArgs("MyProgram.log", message, className, methodName, e);
+        return new LoggerEventArgs(message, className, methodName, e);
     }
 }
 ```
