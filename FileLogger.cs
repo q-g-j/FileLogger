@@ -12,12 +12,13 @@ namespace Logging
     /// </summary>
     public class FileLogger
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="maxFileSizeInKB"></param>
-        /// <param name="args"></param>
+        public FileLogger(int _maxFileSizeInKB)
+        {
+            maxFileSizeInKB = _maxFileSizeInKB;
+        }
+
+        private readonly int maxFileSizeInKB;
+
         public void LogWriteLine(object o, LoggerEventArgs args)
         {
             Task.Run(() =>
@@ -46,10 +47,10 @@ namespace Logging
 
                     List<string> logFileContent = File.ReadAllLines(args.FileName).ToList();
 
-                    if (GetSizeOfStringListInBytes(logFileContent) > args.MaxFileSizeInKB)
+                    if (GetSizeOfStringListInBytes(logFileContent) > maxFileSizeInKB)
                     {
                         WaitForFile(args.FileName);
-                        File.WriteAllLines(args.FileName, TrimToSizeInByte(logFileContent, 1024 * args.MaxFileSizeInKB));
+                        File.WriteAllLines(args.FileName, TrimToSizeInByte(logFileContent, 1024 * maxFileSizeInKB));
                     }
                     else
                     {
