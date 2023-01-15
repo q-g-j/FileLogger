@@ -6,15 +6,15 @@
  Used in my other project [ToggleHypervisor](https://github.com/q-g-j/ToggleHypervisor)
  
  ### Features
- - provides a simple IFileLogger interface
- - trims the log file to a specified size
+ - provides an **IFileLogger** interface
+ - trims the log file to a specified size (by removing old entries)
  - takes simultaneous file access into account
  
  ### Usage
  - download the repo
  - add the project to your VS solution
  - add a reference to this project in the reference manager
- - a class can now inherit from IFileLogger.  Here is a sample implementation:
+ - any class can now inherit from **IFileLogger**.  Here is a sample implementation:
  
 <details>
 <summary><b>Interface implementation (click to expand)</b></summary>
