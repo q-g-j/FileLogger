@@ -1,6 +1,8 @@
  # FileLogger
  ***A simple file logger to be used in .NET projects***
  
+ Copyright 2023 Jann Emken
+ 
  Used in my other project [ToggleHypervisor](https://github.com/q-g-j/ToggleHypervisor)
  
  ### Features
