@@ -44,7 +44,7 @@ public class MyClass : IFileLogger
     protected virtual LoggerEventArgs GetLoggerEventArgs(string message, string className, string methodName, Exception e)
     {
         // the second parameter is the desired maximal size of the log file in KB:
-        return new LoggerEventArgs("MyClass.log", 4, message, className, methodName, e);
+        return new LoggerEventArgs("MyProgram.log", 4, message, className, methodName, e);
     }
 }
 ```
