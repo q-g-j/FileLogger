@@ -50,10 +50,10 @@ namespace Logging
                     WaitForFile(logFileName);
                     List<string> logFileContent = File.ReadAllLines(logFileName).ToList();
 
-                    if (GetSizeOfStringListInBytes(logFileContent) > maxFileSizeInKB)
+                    if (GetSizeOfStringListInBytes(logFileContent) > maxFileSizeInKB * 1024)
                     {
                         WaitForFile(logFileName);
-                        File.WriteAllLines(logFileName, TrimToSizeInByte(logFileContent, 1024 * maxFileSizeInKB));
+                        File.WriteAllLines(logFileName, TrimToSizeInByte(logFileContent, maxFileSizeInKB * 1024));
                     }
                     else
                     {

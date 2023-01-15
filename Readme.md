@@ -27,7 +27,7 @@ public class MyClass : IFileLogger
     public MyClass()
     {
         // pass the log filename and the desired max. log file size in KB to the constructor:
-        fileLogger = new FileLogger("MyProgram.log", 4);   
+        fileLogger = new FileLogger("MyProgram.log", 256);   
         LogEvent += fileLogger.LogWriteLine;
     }
     
@@ -38,19 +38,9 @@ public class MyClass : IFileLogger
         RaiseLogEvent(o, eventArgs);
     }
 
-    LoggerEventArgs IFileLogger.GetEventArgs(string message, string className, string methodName, Exception e)
-    {
-        return GetLoggerEventArgs(message, className, methodName, e);
-    }
-
     protected virtual void RaiseLogEvent(object o, LoggerEventArgs eventArgs)
     {
         LogEvent?.Invoke(o, eventArgs);
-    }
-
-    protected virtual LoggerEventArgs GetLoggerEventArgs(string message, string className, string methodName, Exception e)
-    {
-        return new LoggerEventArgs(message, className, methodName, e);
     }
 }
 ```
@@ -66,13 +56,12 @@ try
 }
 catch (Exception ex)
 {
-    LoggerEventArgs loggerEventArgs = GetLoggerEventArgs(
-        String.Empty,
-        GetType().Name,
-        MethodBase.GetCurrentMethod().Name,
-        ex
-        );
-    RaiseLogEvent(this, loggerEventArgs);
+	var loggerEventArgs = new LoggerEventArgs(
+		String.Empty,
+		GetType().Name,
+		MethodBase.GetCurrentMethod().Name,
+		ex);
+	RaiseLogEvent(this, loggerEventArgs);
 }
 ```
 </details>
