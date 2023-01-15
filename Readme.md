@@ -56,12 +56,12 @@ try
 }
 catch (Exception ex)
 {
-	var loggerEventArgs = new LoggerEventArgs(
-		String.Empty,
-		GetType().Name,
-		MethodBase.GetCurrentMethod().Name,
-		ex);
-	RaiseLogEvent(this, loggerEventArgs);
+    var loggerEventArgs = new LoggerEventArgs(
+        String.Empty,
+        GetType().Name,
+        MethodBase.GetCurrentMethod().Name,
+        ex);
+    RaiseLogEvent(this, loggerEventArgs);
 }
 ```
 </details>
