@@ -41,28 +41,31 @@ namespace Logging
                         message += $" - {args.Message}";
                     }
 
-                    WaitForFile(logFileName);
-                    using (var streamWriter = new StreamWriter(logFileName, true))
-                    {
-                        streamWriter.WriteLine(message);
-                    }
+                    List<string> logFileContent = null;
 
-                    WaitForFile(logFileName);
-                    List<string> logFileContent = File.ReadAllLines(logFileName).ToList();
+                    if (File.Exists(logFileName))
+                    {
+                        WaitForFile(logFileName);
+                        logFileContent = File.ReadAllLines(logFileName, System.Text.Encoding.ASCII).ToList();
+                    }
+                    if (logFileContent == null)
+                    {
+                        logFileContent = new List<string>();
+                    }
 
                     if (GetSizeOfStringListInBytes(logFileContent) > maxFileSizeInKB * 1024)
                     {
                         WaitForFile(logFileName);
-                        File.WriteAllLines(logFileName, TrimToSizeInByte(logFileContent, maxFileSizeInKB * 1024));
+                        File.WriteAllLines(logFileName, TrimToSizeInByte(logFileContent, maxFileSizeInKB * 1024), System.Text.Encoding.ASCII);
                     }
                     else
                     {
                         WaitForFile(logFileName);
-                        File.WriteAllLines(logFileName, logFileContent);
+                        File.WriteAllLines(logFileName, logFileContent, System.Text.Encoding.ASCII);
                     }
                 }
                 catch
-                { 
+                {
                 }
             });
         }
@@ -74,8 +77,8 @@ namespace Logging
         /// <returns>The size of the string list in Bytes.</returns>
         private static int GetSizeOfStringListInBytes(List<string> stringList)
         {
-            int systemNewLineCharInBytes = System.Text.Encoding.UTF8.GetByteCount(Environment.NewLine);
-            return System.Text.Encoding.UTF8.GetByteCount(String.Join("\n", stringList)) + systemNewLineCharInBytes * stringList.Count;
+            int systemNewLineCharInBytes = System.Text.Encoding.ASCII.GetByteCount(Environment.NewLine);
+            return System.Text.Encoding.ASCII.GetByteCount(string.Join("", stringList)) + systemNewLineCharInBytes * stringList.Count;
         }
 
         /// <summary>
@@ -94,7 +97,7 @@ namespace Logging
                 while (GetSizeOfStringListInBytes(trimmedList) > maxSizeInBytes)
                 {
                     List<string> backupTrimmedList = new List<string>(trimmedList);
-                    trimmedList = new List<string>(trimmedList.Skip(skip).ToList<string>());
+                    trimmedList = new List<string>(trimmedList.Skip(skip).ToList());
                     if (GetSizeOfStringListInBytes(trimmedList) < maxSizeInBytes)
                     {
                         trimmedList = backupTrimmedList;
@@ -131,7 +134,7 @@ namespace Logging
         private static void WaitForFile(string filename)
         {
             int counter = 0;
-            while (!IsFileReady(filename) && counter < 100)
+            while (!IsFileReady(filename) && counter < 1000)
             {
                 counter++;
             }
