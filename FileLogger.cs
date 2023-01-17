@@ -53,6 +53,8 @@ namespace Logging
                         logFileContent = new List<string>();
                     }
 
+                    logFileContent.Add(message);
+
                     if (GetSizeOfStringListInBytes(logFileContent) > maxFileSizeInKB * 1024)
                     {
                         WaitForFile(logFileName);
