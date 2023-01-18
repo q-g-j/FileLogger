@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace Logging
+namespace QGJSoft.Logging
 {
     /// <summary>
     /// 

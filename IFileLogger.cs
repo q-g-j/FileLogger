@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logging
+namespace QGJSoft.Logging
 {
     /// <summary>
     /// 
