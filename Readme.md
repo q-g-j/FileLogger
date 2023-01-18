@@ -60,7 +60,7 @@ RaiseLogEvent(this, loggerEventArgs);
 </details>
 
 <details>
-<summary><b>Raising a LogEvent - in a catch block (click to expand)</b></summary>
+<summary><b>Raising a LogEvent - exception message from a catch block (click to expand)</b></summary>
 
 ```
 try
