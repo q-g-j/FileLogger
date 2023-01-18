@@ -47,7 +47,20 @@ public class MyClass : IFileLogger
 </details>
 
 <details>
-<summary><b>Raising a LogEvent (click to expand)</b></summary>
+<summary><b>Raising a LogEvent - normal message (click to expand)</b></summary>
+
+```
+var loggerEventArgs = new LoggerEventArgs(
+    "My Message",
+    GetType().Name,
+    MethodBase.GetCurrentMethod().Name,
+    null);
+RaiseLogEvent(this, loggerEventArgs);
+```
+</details>
+
+<details>
+<summary><b>Raising a LogEvent - in a catch block (click to expand)</b></summary>
 
 ```
 try
