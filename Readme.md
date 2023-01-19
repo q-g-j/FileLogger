@@ -1,5 +1,5 @@
  # FileLogger
- ***A simple file logger to be used in .NET projects***
+ ***A simple event based file logger to be used in .NET projects***
  
  Copyright 2023 Jann Emken
  
