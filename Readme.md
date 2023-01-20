@@ -73,7 +73,7 @@ catch (Exception ex)
         String.Empty,  // will not be processed, if the last parameter (Exception ex) is not null
         GetType().Name,  // returns the current class name
         MethodBase.GetCurrentMethod().Name,  // returns the calling method's name
-        ex);  // only the Exception.Message property will be used
+        ex);  // only the exception type and the Exception.Message property will be used
     RaiseLogEvent(this, loggerEventArgs);
 }
 ```
