@@ -47,7 +47,7 @@ namespace QGJSoft.Logging
                     if (File.Exists(logFileName))
                     {
                         WaitForFile(logFileName);
-                        logFileContent = File.ReadAllLines(logFileName, System.Text.Encoding.ASCII).ToList();
+                        logFileContent = File.ReadAllLines(logFileName, System.Text.Encoding.UTF8).ToList();
                     }
                     if (logFileContent == null)
                     {
@@ -59,12 +59,12 @@ namespace QGJSoft.Logging
                     if (GetSizeOfStringListInBytes(logFileContent) > maxFileSizeInKB * 1024)
                     {
                         WaitForFile(logFileName);
-                        File.WriteAllLines(logFileName, TrimToSizeInByte(logFileContent, maxFileSizeInKB * 1024), System.Text.Encoding.ASCII);
+                        File.WriteAllLines(logFileName, TrimToSizeInByte(logFileContent, maxFileSizeInKB * 1024), System.Text.Encoding.UTF8);
                     }
                     else
                     {
                         WaitForFile(logFileName);
-                        File.WriteAllLines(logFileName, logFileContent, System.Text.Encoding.ASCII);
+                        File.WriteAllLines(logFileName, logFileContent, System.Text.Encoding.UTF8);
                     }
                 }
                 catch
@@ -80,8 +80,8 @@ namespace QGJSoft.Logging
         /// <returns>The size of the string list in Bytes.</returns>
         private static int GetSizeOfStringListInBytes(List<string> stringList)
         {
-            int systemNewLineCharInBytes = System.Text.Encoding.ASCII.GetByteCount(Environment.NewLine);
-            return System.Text.Encoding.ASCII.GetByteCount(string.Join("", stringList)) + systemNewLineCharInBytes * stringList.Count;
+            int systemNewLineCharInBytes = System.Text.Encoding.UTF8.GetByteCount(Environment.NewLine);
+            return System.Text.Encoding.UTF8.GetByteCount(string.Join("", stringList)) + systemNewLineCharInBytes * stringList.Count;
         }
 
         /// <summary>
