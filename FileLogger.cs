@@ -31,10 +31,11 @@ namespace QGJSoft.Logging
 
                     if (args.Exception != null)
                     {
-                        string senderObject = args.SenderClass;
+                        string senderClass = args.SenderClass;
                         string senderMethod = args.SenderMethod;
+                        string exceptionName = args.Exception.GetType().Name;
                         string exceptionMessage = args.Exception.Message;
-                        message += $" - Error in class {senderObject}, Method {senderMethod}: {exceptionMessage}";
+                        message += $" - Error in class {senderClass}, Method {senderMethod} - {exceptionName}: {exceptionMessage}";
                     }
                     else
                     {
