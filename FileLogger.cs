@@ -35,7 +35,7 @@ namespace QGJSoft.Logging
                         string senderMethod = args.SenderMethod;
                         string exceptionName = args.Exception.GetType().Name;
                         string exceptionMessage = args.Exception.Message;
-                        message += $" - Error in class {senderClass}, Method {senderMethod} - {exceptionName}: {exceptionMessage}";
+                        message += $" - Error in class {senderClass}, method {senderMethod} - {exceptionName}: {exceptionMessage}";
                     }
                     else
                     {
