@@ -80,4 +80,6 @@ catch (Exception ex)
 </details>
 
 ### Example Log Message (when passing an exception):
-```20.01.2023 17:08:25 - Error in class SettingsFileWriter, method Write: UnauthorizedAccessException: Access to the path "C:\Users\User\AppData\Roaming\ToggleHypervisor\Settings.json" is denied.```
+```
+ 20.01.2023 17:08:25 - Error in class SettingsFileWriter, method Write: UnauthorizedAccessException: Access to the path "C:\Users\User\AppData\Roaming\ToggleHypervisor\Settings.json" is denied.
+ ```
