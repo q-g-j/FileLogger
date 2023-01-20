@@ -52,8 +52,8 @@ public class MyClass : IFileLogger
 ```
 var loggerEventArgs = new LoggerEventArgs(
     "My Message",
-    GetType().Name,
-    MethodBase.GetCurrentMethod().Name,
+    GetType().Name,  // returns the current class name
+    MethodBase.GetCurrentMethod().Name,  // returns the calling method's name
     null);
 RaiseLogEvent(this, loggerEventArgs);
 ```
@@ -70,11 +70,14 @@ try
 catch (Exception ex)
 {
     var loggerEventArgs = new LoggerEventArgs(
-        String.Empty,
-        GetType().Name,
-        MethodBase.GetCurrentMethod().Name,
-        ex);
+        String.Empty,  // will not be processed, if the last parameter (Exception ex) is not null
+        GetType().Name,  // returns the current class name
+        MethodBase.GetCurrentMethod().Name,  // returns the calling method's name
+        ex);  // only the Exception.Message property will be used
     RaiseLogEvent(this, loggerEventArgs);
 }
 ```
 </details>
+
+### Example Log Message (when passing an exception):
+```20.01.2023 17:08:25 - Error in class SettingsFileWriter, Method Write: UnauthorizedAccessException: Access to the path "C:\Users\User\AppData\Roaming\ToggleHypervisor\Settings.json" is denied.```
