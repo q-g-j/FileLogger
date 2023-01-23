@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace QGJSoft.Logging
 {
@@ -7,7 +8,7 @@ namespace QGJSoft.Logging
     /// </summary>
     public interface IFileLogger
     {
-        event Action<object, LoggerEventArgs> LogEvent;
-        void OnLogEvent(object o, LoggerEventArgs eventArgs);
+        event Action<string, int, LoggerEventArgs> LogEvent;
+        void OnLogEvent(string logFileFullPath, int maxLogFileSize, LoggerEventArgs eventArgs);
     }
 }

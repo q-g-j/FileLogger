@@ -10,18 +10,9 @@ namespace QGJSoft.Logging
     /// <summary>
     /// 
     /// </summary>
-    public class FileLogger
+    public static class FileLogger
     {
-        public FileLogger(string _logFileName, int _maxFileSizeInKB)
-        {
-            logFileName = _logFileName;
-            maxFileSizeInKB = _maxFileSizeInKB;
-        }
-
-        private readonly string logFileName;
-        private readonly int maxFileSizeInKB;
-
-        public void LogWriteLine(object o, LoggerEventArgs args)
+        public static void LogWriteLine(string logFileFullPath, int maxLogFileSizeInKB, LoggerEventArgs args)
         {
             Task.Run(() =>
             {
@@ -44,11 +35,13 @@ namespace QGJSoft.Logging
 
                     List<string> logFileContent = null;
 
-                    if (File.Exists(logFileName))
+                    if (File.Exists(logFileFullPath))
                     {
-                        WaitForFile(logFileName);
-                        logFileContent = File.ReadAllLines(logFileName, System.Text.Encoding.UTF8).ToList();
+                        WaitForFile(logFileFullPath);
+                        logFileContent = File.ReadAllLines(logFileFullPath, System.Text.Encoding.UTF8).ToList();
                     }
+
+
                     if (logFileContent == null)
                     {
                         logFileContent = new List<string>();
@@ -56,15 +49,15 @@ namespace QGJSoft.Logging
 
                     logFileContent.Add(message);
 
-                    if (GetSizeOfStringListInBytes(logFileContent) > maxFileSizeInKB * 1024)
+                    if (GetSizeOfStringListInBytes(logFileContent) > maxLogFileSizeInKB * 1024)
                     {
-                        WaitForFile(logFileName);
-                        File.WriteAllLines(logFileName, TrimToSizeInByte(logFileContent, maxFileSizeInKB * 1024), System.Text.Encoding.UTF8);
+                        WaitForFile(logFileFullPath);
+                        File.WriteAllLines(logFileFullPath, TrimToSizeInByte(logFileContent, maxLogFileSizeInKB * 1024), System.Text.Encoding.UTF8);
                     }
                     else
                     {
-                        WaitForFile(logFileName);
-                        File.WriteAllLines(logFileName, logFileContent, System.Text.Encoding.UTF8);
+                        WaitForFile(logFileFullPath);
+                        File.WriteAllLines(logFileFullPath, logFileContent, System.Text.Encoding.UTF8);
                     }
                 }
                 catch
@@ -136,10 +129,13 @@ namespace QGJSoft.Logging
 
         private static void WaitForFile(string filename)
         {
-            int counter = 0;
-            while (!IsFileReady(filename) && counter < 1000)
+            if (File.Exists(filename))
             {
-                counter++;
+                int counter = 0;
+                while (!IsFileReady(filename) && counter < 500)
+                {
+                    counter++;
+                }
             }
         }
     }
