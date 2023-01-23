@@ -21,26 +21,22 @@
 
 ```
 public class MyClass : IFileLogger
-{
-    private readonly FileLogger fileLogger;
-    
+{    
     public MyClass()
     {
-        // pass the log filename and the desired max. log file size in KB to the constructor:
-        fileLogger = new FileLogger("MyProgram.log", 256);   
-        LogEvent += fileLogger.LogWriteLine;
-    }
-    
-    public event Action<object, LoggerEventArgs> LogEvent;
-
-    void IFileLogger.OnLogEvent(object o, LoggerEventArgs eventArgs)
-    {
-        RaiseLogEvent(o, eventArgs);
+        LogEvent += FileLogger.LogWriteLine;
     }
 
-    protected virtual void RaiseLogEvent(object o, LoggerEventArgs eventArgs)
+    public event Action<string, int, LoggerEventArgs> LogEvent;
+
+    void IFileLogger.OnLogEvent(string logFileFullPath, int maxLogFileSize, LoggerEventArgs eventArgs)
     {
-        LogEvent?.Invoke(o, eventArgs);
+        RaiseLogEvent(logFileFullPath, maxLogFileSize, eventArgs);
+    }
+
+    protected virtual void RaiseLogEvent(string logFileFullPath, int maxLogFileSize, LoggerEventArgs eventArgs)
+    {
+        LogEvent?.Invoke(logFileFullPath, maxLogFileSize, eventArgs);
     }
 }
 ```
@@ -55,7 +51,7 @@ var loggerEventArgs = new LoggerEventArgs(
     GetType().Name,  // returns the current class name
     MethodBase.GetCurrentMethod().Name,  // returns the calling method's name
     null);
-RaiseLogEvent(this, loggerEventArgs);
+RaiseLogEvent("MyProgram.log", 256, loggerEventArgs);
 ```
 </details>
 
@@ -74,7 +70,7 @@ catch (Exception ex)
         GetType().Name,  // returns the current class name
         MethodBase.GetCurrentMethod().Name,  // returns the calling method's name
         ex);  // only the exception type and the Exception.Message property will be used
-    RaiseLogEvent(this, loggerEventArgs);
+    RaiseLogEvent("MyProgram.log", 256, loggerEventArgs);
 }
 ```
 </details>
