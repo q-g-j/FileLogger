@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace QGJSoft.Logging
 {
@@ -34,7 +31,6 @@ namespace QGJSoft.Logging
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                Debug.WriteLine("here");
                 if (logQueue.TryDequeue(out Tuple<string, int, LoggerEventArgs> tuple))
                 {
                     try
