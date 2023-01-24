@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -14,21 +15,26 @@ namespace QGJSoft.Logging
     /// </summary>
     public static class FileLogger
     {
+        public static CancellationTokenSource CancellationTokenSource;
+
         private static readonly ConcurrentQueue<Tuple<string, int, LoggerEventArgs>> logQueue = new ConcurrentQueue<Tuple<string, int, LoggerEventArgs>>();
 
         static FileLogger()
         {
-            new Thread(LogWritingThread).Start();
+            CancellationTokenSource = new CancellationTokenSource();
+            new Thread(() => LogWritingThread(CancellationTokenSource.Token)).Start();
         }
 
         public static void LogWriteLine(string logFileFullPath, int maxLogFileSizeInKB, LoggerEventArgs args)
         {
             logQueue.Enqueue(new Tuple<string, int, LoggerEventArgs>(logFileFullPath, maxLogFileSizeInKB, args));
         }
-        private static void LogWritingThread()
+
+        private static void LogWritingThread(CancellationToken cancellationToken)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
+                Debug.WriteLine("here");
                 if (logQueue.TryDequeue(out Tuple<string, int, LoggerEventArgs> tuple))
                 {
                     try
