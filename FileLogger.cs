@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QGJSoft.Logging
@@ -12,58 +14,70 @@ namespace QGJSoft.Logging
     /// </summary>
     public static class FileLogger
     {
+        private static readonly ConcurrentQueue<Tuple<string, int, LoggerEventArgs>> logQueue = new ConcurrentQueue<Tuple<string, int, LoggerEventArgs>>();
+
+        static FileLogger()
+        {
+            new Thread(LogWritingThread).Start();
+        }
+
         public static void LogWriteLine(string logFileFullPath, int maxLogFileSizeInKB, LoggerEventArgs args)
         {
-            Task.Run(() =>
+            logQueue.Enqueue(new Tuple<string, int, LoggerEventArgs>(logFileFullPath, maxLogFileSizeInKB, args));
+        }
+        private static void LogWritingThread()
+        {
+            while (true)
             {
-                try
+                if (logQueue.TryDequeue(out Tuple<string, int, LoggerEventArgs> tuple))
                 {
-                    string message = DateTime.Now.ToString();
-
-                    if (args.Exception != null)
+                    try
                     {
-                        string senderClass = args.SenderClass;
-                        string senderMethod = args.SenderMethod;
-                        string exceptionName = args.Exception.GetType().Name;
-                        string exceptionMessage = args.Exception.Message;
-                        message += $" - Error in class {senderClass}, method {senderMethod} - {exceptionName}: {exceptionMessage}";
+                        string message = DateTime.Now.ToString();
+
+                        if (tuple.Item3.Exception != null)
+                        {
+                            string senderObject = tuple.Item3.SenderClass;
+                            string senderMethod = tuple.Item3.SenderMethod;
+                            string exceptionMessage = tuple.Item3.Exception.Message;
+                            message += $" - Error in class {senderObject}, Method {senderMethod}: {exceptionMessage}";
+                        }
+                        else
+                        {
+                            message += $" - {tuple.Item3.Message}";
+                        }
+
+                        List<string> logFileContent = null;
+
+                        if (File.Exists(tuple.Item1))
+                        {
+                            logFileContent = File.ReadAllLines(tuple.Item1, System.Text.Encoding.UTF8).ToList();
+                        }
+                        if (logFileContent == null)
+                        {
+                            logFileContent = new List<string>();
+                        }
+
+                        logFileContent.Add(message);
+
+                        if (GetSizeOfStringListInBytes(logFileContent) > tuple.Item2 * 1024)
+                        {
+                            File.WriteAllLines(tuple.Item1, TrimToSizeInByte(logFileContent, tuple.Item2 * 1024), System.Text.Encoding.ASCII);
+                        }
+                        else
+                        {
+                            File.WriteAllLines(tuple.Item1, logFileContent, System.Text.Encoding.ASCII);
+                        }
                     }
-                    else
+                    catch
                     {
-                        message += $" - {args.Message}";
-                    }
-
-                    List<string> logFileContent = null;
-
-                    if (File.Exists(logFileFullPath))
-                    {
-                        WaitForFile(logFileFullPath);
-                        logFileContent = File.ReadAllLines(logFileFullPath, System.Text.Encoding.UTF8).ToList();
-                    }
-
-
-                    if (logFileContent == null)
-                    {
-                        logFileContent = new List<string>();
-                    }
-
-                    logFileContent.Add(message);
-
-                    if (GetSizeOfStringListInBytes(logFileContent) > maxLogFileSizeInKB * 1024)
-                    {
-                        WaitForFile(logFileFullPath);
-                        File.WriteAllLines(logFileFullPath, TrimToSizeInByte(logFileContent, maxLogFileSizeInKB * 1024), System.Text.Encoding.UTF8);
-                    }
-                    else
-                    {
-                        WaitForFile(logFileFullPath);
-                        File.WriteAllLines(logFileFullPath, logFileContent, System.Text.Encoding.UTF8);
                     }
                 }
-                catch
+                else
                 {
+                    Thread.Sleep(10);
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -110,33 +124,6 @@ namespace QGJSoft.Logging
             }
 
             return trimmedList;
-        }
-
-        private static bool IsFileReady(string filename)
-        {
-            try
-            {
-                using (FileStream fs = File.Open(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
-                {
-                    return true;
-                }
-            }
-            catch (IOException)
-            {
-                return false;
-            }
-        }
-
-        private static void WaitForFile(string filename)
-        {
-            if (File.Exists(filename))
-            {
-                int counter = 0;
-                while (!IsFileReady(filename) && counter < 500)
-                {
-                    counter++;
-                }
-            }
         }
     }
 }
