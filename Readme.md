@@ -14,9 +14,7 @@
  - download the repo
  - add the project to your VS solution
  - add a reference to this project in the reference manager
- - **Important:** The FileLogger class uses a ConcurrentQueue to take multiple file access into account. This makes it **necessary** to run</br>
-   ```FileLogger.CancellationTokenSource.Cancel();```</br>
-   before the main application quits.
+ - implement the interface IFileLogger:
  
 <details>
 <summary><b>Interface implementation (click to expand)</b></summary>
@@ -75,24 +73,6 @@ catch (Exception ex)
         MethodBase.GetCurrentMethod().Name,  // returns the calling method's name
         ex);  // only the exception type and the Exception.Message property will be used
     RaiseLogEvent("MyProgram.log", 256, loggerEventArgs);
-}
-```
-
-</details>
-
-<details>
-<summary><b>Quit the FileLogger queue - example for class App in a WPF application: (click to expand)</b></summary>
-
-```
-public partial class App : Application
-{
-    // ...
-    
-    protected override void OnExit(ExitEventArgs e)
-    {
-        FileLogger.CancellationTokenSource.Cancel();
-        base.OnExit(e);
-    }
 }
 ```
 
