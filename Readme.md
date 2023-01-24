@@ -14,7 +14,9 @@
  - download the repo
  - add the project to your VS solution
  - add a reference to this project in the reference manager
- - any class can now inherit from **IFileLogger**.  Here is a sample implementation:
+ - **Important:** The FileLogger class uses a ConcurrentQueue to take multiple file access into account. This makes it **necessary** to run</br>
+   ```FileLogger.CancellationTokenSource.Cancel();```</br>
+   before the main application quits.
  
 <details>
 <summary><b>Interface implementation (click to expand)</b></summary>
@@ -40,6 +42,7 @@ public class MyClass : IFileLogger
     }
 }
 ```
+
 </details>
 
 <details>
@@ -53,6 +56,7 @@ var loggerEventArgs = new LoggerEventArgs(
     null);
 RaiseLogEvent("MyProgram.log", 256, loggerEventArgs);
 ```
+
 </details>
 
 <details>
@@ -73,6 +77,25 @@ catch (Exception ex)
     RaiseLogEvent("MyProgram.log", 256, loggerEventArgs);
 }
 ```
+
+</details>
+
+<details>
+<summary><b>Quit the FileLogger queue - example for class App in a WPF application: (click to expand)</b></summary>
+
+```
+public partial class App : Application
+{
+    // ...
+    
+    protected override void OnExit(ExitEventArgs e)
+    {
+        FileLogger.CancellationTokenSource.Cancel();
+        base.OnExit(e);
+    }
+}
+```
+
 </details>
 
 ### Example Log Message (when passing an exception):
