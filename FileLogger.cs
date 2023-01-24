@@ -62,11 +62,11 @@ namespace QGJSoft.Logging
 
                         if (GetSizeOfStringListInBytes(logFileContent) > tuple.Item2 * 1024)
                         {
-                            File.WriteAllLines(tuple.Item1, TrimToSizeInByte(logFileContent, tuple.Item2 * 1024), System.Text.Encoding.ASCII);
+                            File.WriteAllLines(tuple.Item1, TrimToSizeInByte(logFileContent, tuple.Item2 * 1024), System.Text.Encoding.UTF8);
                         }
                         else
                         {
-                            File.WriteAllLines(tuple.Item1, logFileContent, System.Text.Encoding.ASCII);
+                            File.WriteAllLines(tuple.Item1, logFileContent, System.Text.Encoding.UTF8);
                         }
                     }
                     catch
